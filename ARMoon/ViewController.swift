@@ -20,14 +20,35 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the view's delegate
         sceneView.delegate = self
         
-        // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+        let sphere = SCNSphere(radius: 0.2)
+        let material = SCNMaterial()
+        material.diffuse.contents = UIImage(named: "art.scnassets/earth.jpg")
+        sphere.materials = [material]
         
-        // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
         
-        // Set the scene to the view
-        sceneView.scene = scene
+        let node = SCNNode()
+        node.position = SCNVector3Make(0, 0.1, -0.5)
+        
+        node.geometry = sphere
+        
+        sceneView.scene.rootNode.addChildNode(node)
+        
+        
+        let spin = CABasicAnimation(keyPath: "rotation")
+        // Use from-to to explicitly make a full rotation around z
+        
+        spin.fromValue = NSValue(scnVector4: SCNVector4Make(0, 0, 1, 0))
+        spin.toValue = NSValue(scnVector4: SCNVector4Make(0, 0, 1, Float(2 * M_PI)))
+        
+        
+        spin.duration = 3
+        spin.repeatCount = .infinity
+        
+        node.addAnimation(spin, forKey: "spin around")
+        
+        sceneView.autoenablesDefaultLighting = true
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
